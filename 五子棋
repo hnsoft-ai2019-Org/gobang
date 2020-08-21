@@ -1,0 +1,134 @@
+package GoBang;
+
+import java.util.Scanner;
+//五子棋1.0
+public class GoBang1 {
+	//定义棋盘长度
+	public static int length = 15;
+	public static String[][] chessBoard = new String[length][length];
+	
+	public static void main(String[] args) {
+		Scanner in = new Scanner(System.in);
+		
+		//定义黑白棋子
+		String black = "*";
+		String white = "⭐";
+		String grid = "➕";
+		//棋盘坐标
+		String[] grade = {"1","2","3","4","5","6","7","8","9","10","11","12","13","14","15"}; 
+		
+		//创建棋盘
+		for(int i=0;i<chessBoard.length;i++) {
+			for(int j=0;j<chessBoard.length;j++) {
+				chessBoard[i][j] = grid;
+				
+				if(j == (chessBoard.length-1)) {
+					chessBoard[i][j] = grade[i];
+				}
+				if(i == (chessBoard.length-1)) {
+					chessBoard[i][j] = grade[j];
+				}
+				System.out.print(chessBoard[i][j]);
+			}
+			System.out.println();
+		}
+		
+		//下棋
+		boolean flage = true;
+		boolean bool  =true;
+		
+		while(flage) {
+			System.out.println("请"+(bool? "黑":"白")+"棋下棋");
+			
+			//将输入到控制台的坐标放入数组并用分隔符分开
+			String seed = in.next();
+			String[] split = seed.split(",");
+			int x = Integer.parseInt(split[0])-1;
+			int y = Integer.parseInt(split[1])-1;
+			
+			//判断落子的有效性,如果有效落子后判断输赢
+			if(x<0 || y<0 || x>13 ||y>13) {
+				System.out.println("超出棋盘范围,请重新下子");
+			}else {
+				if(!chessBoard[x][y].equals(grid)) {
+					System.out.println("此处有子,请重新下子");
+				}else {
+					if(bool) {
+						chessBoard[x][y] = black;
+						if(isWin(x,y,black)) {
+							System.out.println("黑棋获胜");
+							flage = false;
+						}			
+					}else {
+						chessBoard[x][y] = white;
+						if(isWin(x,y,white)) {
+							System.out.println("白棋获胜");
+							flage = false;
+						}
+					}
+					//交换落子
+					bool = !bool;
+				}
+			}
+            for (String[] strings : chessBoard) {
+                for (String string : strings) {
+                    System.out.print(string);
+                }
+                System.out.println();
+            }
+		}
+	}
+	
+	//判断输赢
+	public static boolean isWin(int x,int y,String color) {
+		//横向
+		for(int i=0;i<chessBoard.length-5;i++) {
+			if(chessBoard[x][i].equals(color) && chessBoard[x][i+1].equals(color) &&
+					chessBoard[x][i+2].equals(color) && chessBoard[x][i+3].equals(color)
+					&& chessBoard[x][i+4].equals(color)) {
+				return true;
+			}
+		}
+		//纵向
+		for(int i=0;i<chessBoard.length-5;i++) {
+			if（chessBoard [i] [y] .equals（color）&& ChessBoard [i + 1] [y] .equals（color）&&
+				chessBoard[i+2][y].equals(color) && chessBoard[i+3][y].equals(color)
+					&& chessBoard[i+4][y].equals(color)) {
+				return true;
+			}
+		}
+		//斜向下
+		if(x>=y) {
+			int j=0;
+			for(int i=x-y;i<chessBoard.length-5;i++) {
+				if(chessBoard[i][j].equals(color) && chessBoard[i+1][j+1].equals(color) &&
+						chessBoard[i+2][j+2].equals(color) && chessBoard[i+3][j+3].equals(color)
+						&& chessBoard[i+4][j+4].equals(color)) {
+					return true;
+				}
+				j++;
+			}
+		}else {
+			int i=0;
+			for(int j=y-x;i<chessBoard.length-5;i++) {
+				if(chessBoard[i][j].equals(color) && chessBoard[i+1][j+1].equals(color) &&
+						chessBoard[i+2][j+2].equals(color) && chessBoard[i+3][j+3].equals(color)
+						&& chessBoard[i+4][j+4].equals(color)) {
+					return true;
+				}
+				i++;
+			}
+		}
+		//斜向上
+		int i=0;
+		for(int k=x+y-2;k>=0;k--) {
+			if(chessBoard[i][k].equals(color) && chessBoard[i+1][k-1].equals(color) &&
+					chessBoard[i+2][k-2].equals(color) && chessBoard[i+3][k-3].equals(color)
+					&& chessBoard[i+4][k-4].equals(color)) {
+				return true;
+			}
+			i++;
+		}
+		return false;
+	}
+}
